@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-kubernetes-deployment
+  namespace: default
+  labels:
+    app: spring-boot-kubernetes
+spec:
+  selector:
+    matchLabels:
+      app: spring-boot-kubernetes
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: spring-boot-kubernetes
+    spec:
+      # initContainers:
+        # Init containers are exactly like regular containers, except:
+          # - Init containers always run to completion.
+          # - Each init container must complete successfully before the next one starts.
+      containers:
+      - name:  spring-boot-kubernetes
+        image: docker.io/library/spring-boot-kubernetes:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 5000
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1000Mi
+          limits:
+            cpu: 800m
+            memory: 2000Mi
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-kubernetes-svc
+  namespace: default
+spec:
+  selector:
+    app: spring-boot-kubernetes
+  type: NodePort
+  ports:
+  - name: application-port
+    protocol: TCP
+    port: 5000
+    targetPort: 5000
+    # If you set the `spec.type` field to `NodePort` and you want a specific port number,
+    # you can specify a value in the `spec.ports[*].nodePort` field.
