@@ -84,3 +84,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Thanks to the Spring Boot and Kubernetes communities for their excellent documentation and resources.
 
 Feel free to contribute to this project or report any issues you encounter. Happy coding!
+
+## Image
+![Screenshot of a comment on a GitHub issue showing an image, added in the Markdown, of an Octocat smiling and raising a tentacle.](https://myoctocat.com/assets/images/base-octocat.svg)
