@@ -85,5 +85,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Feel free to contribute to this project or report any issues you encounter. Happy coding!
 
-## Image
+## WorkFlow with Jenkins
 ![Workflow](https://github.com/redolf250/spring-boot-kubernetes-cluster-simple-deployment/blob/master/org.png)
