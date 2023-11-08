@@ -9,7 +9,7 @@ spec:
   selector:
     matchLabels:
       app: spring-boot-kubernetes
-  replicas: 2
+  replicas: 1
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -26,7 +26,7 @@ spec:
           # - Each init container must complete successfully before the next one starts.
       containers:
       - name:  spring-boot-kubernetes
-        image: docker.io/library/spring-boot-kubernetes:latest
+        image: docker.io/library/spring-boot-kubernetes:1.0.0
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 5000

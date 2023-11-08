@@ -1,0 +1,107 @@
+pipeline{
+    agent{
+        label "any"
+    }
+    stages{
+
+        stage("Clone"){
+            steps{
+               scripts{
+                    checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/redolf250/spring-boot-kubernetes-cluster-simple-deployment.git']])
+               }
+            } 
+        }
+
+        stage("Clean"){
+            steps{
+               scripts{
+                  sh 'mvn clean'
+               }
+            }
+        }
+
+        stage("Test"){
+            steps{
+               scripts{
+                   sh 'mvn test'
+               }
+            }
+        }
+
+        stage("Package"){
+            steps{
+               scripts{
+                    sh 'mvn package'
+               }
+            }
+        }
+
+        stage("Check docker status"){
+                steps{
+                    script{
+                        def statusOutput = sh(script: 'systemctl status docker', returnStatus: true, returnStdout: true)
+                        echo "${statusOutput}"
+                        if (statusOutput == 0) {
+                            echo "Docker is running."
+                        } else {
+                            echo "Docker is not running or there was an error:"
+                            echo "${statusOutput}"
+                        }
+                    }
+                }
+
+                post{
+                    always{
+                        echo "Executing command to check if docker is up"
+                    }
+                    success{
+                        echo "Docker service is up!"
+                    }
+                    failure{
+                        echo "Check if docker is running!>>Pipeline stopped"
+                    }
+                }
+            }
+
+        stage("Docker Build Command"){
+            steps{
+               scripts{
+                    sh 'docker build -t spring-boot-kubernetes:1.0.0'
+               }
+            }
+
+            post{
+                always{
+                    echo "Docker build command is running"
+                }
+                success{
+                    echo "Image successfully built"
+                }
+                failure{
+                    echo "Building docker image failed"
+                }
+            }
+        }
+
+        stage("Deployment"){
+            steps{
+               scripts{
+                    sh 'cd k8s'
+                    sh 'kubectl apply -f ./'
+               }
+            }
+        }
+        post{
+            always{
+                echo "Stated deployment"
+            }
+            success{
+                echo "Image successfully deployed"
+            }
+            failure{
+                echo "Deployment failed"
+            }
+        }
+    }
+
+}

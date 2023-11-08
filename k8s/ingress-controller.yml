@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hello-service-ingress
+  namespace: default
+spec:
+  rules:
+  - host: hello.com
+    http:
+      paths:
+      - path: /api/
+        pathType: Prefix
+        backend:
+          service:
+            name: spring-boot-kubernetes-svc
+            port:
+              number: 5000
